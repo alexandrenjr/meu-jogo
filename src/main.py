@@ -1,7 +1,8 @@
-from jogo import executar_jogo
+from jogo import Jogo
 
-def main():
-    executar_jogo()
+def main() -> None:
+    jogo = Jogo()
+    jogo.executar()
 
 if __name__ == "__main__":
     main()

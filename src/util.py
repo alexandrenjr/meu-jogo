@@ -8,18 +8,6 @@ FONTE_TEMPO = pygame.font.SysFont("Lexend", 30)
 FONTE_DERROTA = pygame.font.SysFont("Lexend", 60)
 
 
-def desenhar_jogo(janela, plano_de_fundo, jogador, tempo_decorrido, projeteis, nave_projeteis):
-    janela.blit(plano_de_fundo, (0, 0))
-    fonte_tempo = FONTE_TEMPO.render(f"Tempo: {round(tempo_decorrido)}s", 1, "white")
-    janela.blit(fonte_tempo, (10, 10))
-    jogador.desenhar(janela)
-    for projetil in projeteis:
-        projetil.desenhar(janela)
-    for nave_projetil in nave_projeteis:
-        nave_projetil.desenhar(janela)
-    pygame.display.update()
-
-
 def buscar_path_imagem():
         """Retorna o caminho absoluto para a imagem de fundo."""
         base_path = os.path.dirname(os.path.abspath(__file__))
@@ -41,3 +29,25 @@ def centralizar_x(objeto_largura, janela_largura):
 def obter_cor_aleatoria(i, cores):
     """Obtém i cores aleatórias num conjuto de cores."""
     return random.sample(range(len(cores)), i)
+
+
+def interpolar_cores(n, cor1=(0, 0, 0), cor2=(255, 255, 255)):
+    """Dados duas cores cor1 e cor2, é retornado n tons entre elas.
+    Se o parâmetro n for menor que 2, cor1 será retornada.
+
+    Parâmetros:
+        int n: quantidade de tons desejadas
+        cor1: cor inicial em RGB
+        cor2: cor final em RGB
+    """
+    cores = []
+    if n < 2:
+        cores.append(cor1)
+        return cores
+    for i in range(n):
+        t = i / (n - 1)
+        r = round((1 - t) * cor1[0] + t * cor2[0])
+        g = round((1 - t) * cor1[1] + t * cor2[1])
+        b = round((1 - t) * cor1[2] + t * cor2[2])
+        cores.append((r, g, b))
+    return cores
