@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+from paralaxe import Paralaxe
 from jogador import Jogador
 from projetil import Projetil
 from util import *
@@ -12,17 +13,12 @@ class Jogo:
         pygame.font.init()
         pygame.display.set_caption("Meu jogo")
         self.janela = pygame.display.set_mode((Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA))
-        self.camada_imagem1 = pygame.image.load(buscar_path_imagem("layer1.png")).convert_alpha()
-        self.camada_imagem2 = pygame.image.load(buscar_path_imagem("layer2.png")).convert_alpha()
-        self.camada_imagem1_altura = self.camada_imagem1.get_height()
-        self.camada_imagem2_altura = self.camada_imagem2.get_height()
-        self.camada_imagem1_y = 0
-        self.camada_imagem2_y = 0
-        self.camada_imagem1_velocidade = 0.1
-        self.camada_imagem2_velocidade = 1
+        camadas_imagens_caminhos = [buscar_path_imagem("layer1.png"), buscar_path_imagem("layer2.png")]
+        camadas_imagens_velocidades = [0.5, 1]
+        self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(Config)
         self.relogio = pygame.time.Clock()
-        self.fonte_tempo = pygame.font.Font(None, 36)
+        self.fonte_tempo = pygame.font.Font(None, 30)
         self.tempo_inicio = time.time()
         self.tempo_decorrido = 0
         self.projeteis = []
@@ -34,29 +30,13 @@ class Jogo:
         self.colisao = False
 
 
-    def rolagem_paralaxe(self) -> None:
-        """Atualiza a posição das camadas para o efeito de paralaxe vertical."""
-        self.camada_imagem1_y += self.camada_imagem1_velocidade
-        self.camada_imagem2_y += self.camada_imagem2_velocidade
-
-        if self.camada_imagem1_y >= self.camada_imagem1_altura:
-            self.camada_imagem1_y = 0
-        if self.camada_imagem2_y >= self.camada_imagem2_altura:
-            self.camada_imagem2_y = 0
-
-        self.janela.blit(self.camada_imagem1, (0, self.camada_imagem1_y))
-        self.janela.blit(self.camada_imagem1, (0, self.camada_imagem1_y - self.camada_imagem1_altura))
-        self.janela.blit(self.camada_imagem2, (0, self.camada_imagem2_y))
-        self.janela.blit(self.camada_imagem2, (0, self.camada_imagem2_y - self.camada_imagem2_altura))
-
-
     def adicionar_projeteis(self) -> None:
         """Adiciona os projéteis que vêm de cima (meteoros)."""
         for indice in obter_cor_aleatoria(random.randint(1, 4), Config.cores.PROJETEIS):
-                projetil_x = random.randint(0, Config.jogo.JANELA_LARGURA - Config.projetil.LARGURA)
-                cor = Config.cores.PROJETEIS.get(indice, "red")
-                projetil = Projetil(projetil_x, -Config.projetil.ALTURA, Config.projetil.LARGURA, Config.projetil.ALTURA, Config.projetil.VELOCIDADE, cor)
-                self.projeteis.append(projetil)
+            projetil_x = random.randint(0, Config.jogo.JANELA_LARGURA - Config.projetil.LARGURA)
+            cor = Config.cores.PROJETEIS.get(indice, "red")
+            projetil = Projetil(projetil_x, -Config.projetil.ALTURA, Config.projetil.LARGURA, Config.projetil.ALTURA, Config.projetil.VELOCIDADE, cor)
+            self.projeteis.append(projetil)
         self.projetil_tempo_inc = max(200, self.projetil_tempo_inc - 50)
         self.projetil_quantidade = 0
 
@@ -121,7 +101,7 @@ class Jogo:
     def desenhar(self) -> None:
         """Desenha o jogo."""
         self.janela.fill((0, 0, 0))
-        self.rolagem_paralaxe()
+        self.paralaxe.rolar()
         self.jogador.desenhar(self.janela)
         self.fonte_tempo = FONTE_TEMPO.render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
         for projetil in self.projeteis:
