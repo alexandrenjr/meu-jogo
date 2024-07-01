@@ -27,7 +27,7 @@ class Jogo:
 
 
     def adicionar_projeteis(self) -> None:
-        """Adiciona os projéteis que vem de cima."""
+        """Adiciona os projéteis que vem de cima (meteoros)."""
         for indice in obter_cor_aleatoria(random.randint(1, 4), Config.cores.PROJETEIS):
                 projetil_x = random.randint(0, Config.jogo.JANELA_LARGURA - Config.projetil.LARGURA)
                 cor = Config.cores.PROJETEIS.get(indice, "red")
@@ -40,12 +40,12 @@ class Jogo:
     def adicionar_nave_projeteis(self) -> None:
         """Adiciona projéteis que saem da nave (tiros)."""
         projetil_x = self.jogador.rect.x + (Config.jogador.LARGURA / 2) - (Config.jogador.PROJETIL_LARGURA / 2)
-        projetil = Projetil(projetil_x, self.jogador.rect.y + Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_LARGURA, Config.jogador.PROJETIL_ALTURA, Config.jogador.VELOCIDADE, "orange")
+        projetil = Projetil(projetil_x, self.jogador.rect.y + Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_LARGURA, Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_VELOCIDADE, "orange")
         self.nave_projeteis.append(projetil)
         self.nave_projetil_quantidade = 0
 
 
-    def checar_colisoes(self) -> None:
+    def checar_colisoes_nave(self) -> None:
         """Checa se um dos projéteis (meteoro) atingiu a nave."""
         projeteis_para_remover = []
         for projetil in self.projeteis:
@@ -60,7 +60,6 @@ class Jogo:
                     if projetil.rect.colliderect(hitbox):
                         projeteis_para_remover.append(projetil)
                         self.colisao = True
-                
                 if self.colisao:
                     break;
         
@@ -68,14 +67,27 @@ class Jogo:
             if projetil in self.projeteis:
                 self.projeteis.remove(projetil)
 
+
+    def checar_colisoes_nave_projeteis(self) -> None:
+        """Checa se um dos projéteis da nave (tiro) atingiu algum projétil (meteoro)."""
+        projeteis_para_remover = []
         nave_projeteis_para_remover = []
-        for nave_projetil in self.nave_projeteis[:]:
+        for nave_projetil in self.nave_projeteis:
             try:
                 nave_projetil.mover("cima")
             except ValueError as e:
                 print(e)
+            
             if nave_projetil.rect.y < 0:
                 nave_projeteis_para_remover.append(nave_projetil)
+            else:
+                for projetil in self.projeteis:
+                    if projetil.rect.colliderect(nave_projetil):
+                        projeteis_para_remover.append(projetil)
+
+        for projetil in projeteis_para_remover:
+            if projetil in self.projeteis:
+                self.projeteis.remove(projetil)
 
         for nave_projetil in nave_projeteis_para_remover:
             if nave_projetil in self.nave_projeteis:
@@ -127,7 +139,8 @@ class Jogo:
                         return
 
             self.jogador.mover(pygame.key.get_pressed())
-            self.checar_colisoes()
+            self.checar_colisoes_nave()
+            self.checar_colisoes_nave_projeteis()
 
             if self.colisao:
                 self.mostrar_mensagem_derrota()

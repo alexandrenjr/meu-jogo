@@ -41,4 +41,4 @@ class Jogador:
         for i, hitbox in enumerate(self.hitboxes):
             hitbox.x = self.rect.x + self.pontos_hitboxes[i].x
             hitbox.y = self.rect.y + self.pontos_hitboxes[i].y
-        #     pygame.draw.rect(janela, cores[i], hitbox, 2)
+            # pygame.draw.rect(janela, cores[i], hitbox, 2)

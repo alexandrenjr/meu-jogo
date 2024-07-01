@@ -17,7 +17,8 @@ class JogadorConfig:
     X = centralizar_x(LARGURA, JogoConfig.JANELA_LARGURA)
     Y = JogoConfig.JANELA_ALTURA - ALTURA - 10
     COR = (161, 254, 117)
-    VELOCIDADE = 10
+    VELOCIDADE = 7
+    PROJETIL_VELOCIDADE = 10
     PONTOS_MODULO_PRINCIPAL = [
         (0.3388 * LARGURA, ALTURA),
         (LARGURA / 2, 0.92126 * ALTURA),
@@ -131,7 +132,7 @@ class JogadorConfig:
 
 class ProjetilConfig:
     """Configurações do projetil"""
-    LARGURA = 10
+    LARGURA = 30
     ALTURA = 20
     VELOCIDADE = 3
 
