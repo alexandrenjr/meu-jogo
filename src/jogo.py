@@ -12,9 +12,17 @@ class Jogo:
         pygame.font.init()
         pygame.display.set_caption("Meu jogo")
         self.janela = pygame.display.set_mode((Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA))
-        self.plano_de_fundo = pygame.transform.scale(pygame.image.load(buscar_path_imagem()), (Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA))
+        self.camada_imagem1 = pygame.image.load(buscar_path_imagem("layer1.png")).convert_alpha()
+        self.camada_imagem2 = pygame.image.load(buscar_path_imagem("layer2.png")).convert_alpha()
+        self.camada_imagem1_altura = self.camada_imagem1.get_height()
+        self.camada_imagem2_altura = self.camada_imagem2.get_height()
+        self.camada_imagem1_y = 0
+        self.camada_imagem2_y = 0
+        self.camada_imagem1_velocidade = 0.1
+        self.camada_imagem2_velocidade = 1
         self.jogador = Jogador(Config)
         self.relogio = pygame.time.Clock()
+        self.fonte_tempo = pygame.font.Font(None, 36)
         self.tempo_inicio = time.time()
         self.tempo_decorrido = 0
         self.projeteis = []
@@ -26,8 +34,24 @@ class Jogo:
         self.colisao = False
 
 
+    def rolagem_paralaxe(self) -> None:
+        """Atualiza a posição das camadas para o efeito de paralaxe vertical."""
+        self.camada_imagem1_y += self.camada_imagem1_velocidade
+        self.camada_imagem2_y += self.camada_imagem2_velocidade
+
+        if self.camada_imagem1_y >= self.camada_imagem1_altura:
+            self.camada_imagem1_y = 0
+        if self.camada_imagem2_y >= self.camada_imagem2_altura:
+            self.camada_imagem2_y = 0
+
+        self.janela.blit(self.camada_imagem1, (0, self.camada_imagem1_y))
+        self.janela.blit(self.camada_imagem1, (0, self.camada_imagem1_y - self.camada_imagem1_altura))
+        self.janela.blit(self.camada_imagem2, (0, self.camada_imagem2_y))
+        self.janela.blit(self.camada_imagem2, (0, self.camada_imagem2_y - self.camada_imagem2_altura))
+
+
     def adicionar_projeteis(self) -> None:
-        """Adiciona os projéteis que vem de cima (meteoros)."""
+        """Adiciona os projéteis que vêm de cima (meteoros)."""
         for indice in obter_cor_aleatoria(random.randint(1, 4), Config.cores.PROJETEIS):
                 projetil_x = random.randint(0, Config.jogo.JANELA_LARGURA - Config.projetil.LARGURA)
                 cor = Config.cores.PROJETEIS.get(indice, "red")
@@ -40,7 +64,7 @@ class Jogo:
     def adicionar_nave_projeteis(self) -> None:
         """Adiciona projéteis que saem da nave (tiros)."""
         projetil_x = self.jogador.rect.x + (Config.jogador.LARGURA / 2) - (Config.jogador.PROJETIL_LARGURA / 2)
-        projetil = Projetil(projetil_x, self.jogador.rect.y + Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_LARGURA, Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_VELOCIDADE, "orange")
+        projetil = Projetil(projetil_x, self.jogador.rect.y + Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_LARGURA, Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_VELOCIDADE, (253, 0, 24))
         self.nave_projeteis.append(projetil)
         self.nave_projetil_quantidade = 0
 
@@ -61,7 +85,7 @@ class Jogo:
                         projeteis_para_remover.append(projetil)
                         self.colisao = True
                 if self.colisao:
-                    break;
+                    break
         
         for projetil in projeteis_para_remover:
             if projetil in self.projeteis:
@@ -97,13 +121,14 @@ class Jogo:
     def desenhar(self) -> None:
         """Desenha o jogo."""
         self.janela.fill((0, 0, 0))
-        self.janela.blit(self.plano_de_fundo, (0, 0))
+        self.rolagem_paralaxe()
         self.jogador.desenhar(self.janela)
         self.fonte_tempo = FONTE_TEMPO.render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
         for projetil in self.projeteis:
             projetil.desenhar(self.janela)
         for nave_projetil in self.nave_projeteis:
             nave_projetil.desenhar(self.janela)
+        self.janela.blit(self.fonte_tempo, (10, 10))
         pygame.display.update()
 
 

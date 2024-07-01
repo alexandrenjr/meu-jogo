@@ -8,10 +8,10 @@ FONTE_TEMPO = pygame.font.SysFont("Lexend", 30)
 FONTE_DERROTA = pygame.font.SysFont("Lexend", 60)
 
 
-def buscar_path_imagem():
+def buscar_path_imagem(filename):
         """Retorna o caminho absoluto para a imagem de fundo."""
         base_path = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(base_path, '..', 'assets', 'bg.jpg')
+        return os.path.join(base_path, '..', 'assets', filename)
 
 
 def centralizar(objeto, janela):
