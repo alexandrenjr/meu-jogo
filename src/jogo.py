@@ -14,7 +14,7 @@ class Jogo:
         pygame.display.set_caption("Meu jogo")
         self.janela = pygame.display.set_mode((Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA))
         camadas_imagens_caminhos = [buscar_path_imagem("layer1.png"), buscar_path_imagem("layer2.png")]
-        camadas_imagens_velocidades = [0.5, 1]
+        camadas_imagens_velocidades = [0.5, 2]
         self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(Config)
         self.relogio = pygame.time.Clock()
