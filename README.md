@@ -28,7 +28,8 @@ Clone este repositório:
 git clone <https://github.com/alexandrenjr/meu-jogo.git>
 ```
 
-Se tiver usando o [VSCode](https://code.visualstudio.com/), basta clicar no botão _Controle de Código-Fonte (Source Control em ingês)_ e seguir passo a passo. Na pasta do projeto recém clonado, abra um terminal e crie um ambiente virtual no _Python_ com o seguinte comando:
+> [!TIP]
+> Se tiver usando o [VSCode](https://code.visualstudio.com/), basta clicar no botão _Controle de Código-Fonte (Source Control em ingês)_ e seguir passo a passo. Na pasta do projeto recém clonado, abra um terminal e crie um ambiente virtual no _Python_ com o seguinte comando:
 
 ```bash
 python -m venv env
@@ -46,7 +47,8 @@ Instale as dependências com o seguinte comando:
 pip install -r requirements.txt
 ```
 
-Se tiver usando o [VSCode](https://code.visualstudio.com/), é só apertar `CTRL + Shift + P` e selecionar _Python: criar ambiente virtual_ e seguir o passo a passo.
+> [!TIP]
+> Se tiver usando o [VSCode](https://code.visualstudio.com/), é só apertar `CTRL + Shift + P` e selecionar _Python: criar ambiente virtual_ e seguir o passo a passo.
 
 ## Executando a Aplicação
 
@@ -56,4 +58,5 @@ Execute a aplicação com:
 python main.py
 ```
 
-Se tiver usando o [VSCode](https://code.visualstudio.com/), é só abrir o arquivo main.py e executar.
+> [!TIP]
+> Se tiver usando o [VSCode](https://code.visualstudio.com/), é só abrir o arquivo main.py e executar.
