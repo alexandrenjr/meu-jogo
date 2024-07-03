@@ -59,4 +59,4 @@ python main.py
 ```
 
 > [!TIP]
-> Se tiver usando o [VSCode](https://code.visualstudio.com/), é só abrir o arquivo main.py e executar.
+> Se tiver usando o [VSCode](https://code.visualstudio.com/), é só abrir o arquivo [main.py](main.py) e executar.
