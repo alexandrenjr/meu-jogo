@@ -13,7 +13,7 @@ class Jogo:
         pygame.font.init()
         pygame.display.set_caption("Meu jogo")
         self.janela = pygame.display.set_mode((Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA))
-        camadas_imagens_caminhos = [buscar_path_imagem("layer1.png"), buscar_path_imagem("layer2.png")]
+        camadas_imagens_caminhos = [buscar_path_imagem("layer1.png")]
         camadas_imagens_velocidades = [0.5, 2]
         self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(Config)
@@ -32,9 +32,8 @@ class Jogo:
 
     def adicionar_projeteis(self) -> None:
         """Adiciona os projéteis que vêm de cima (meteoros)."""
-        for indice in obter_cor_aleatoria(random.randint(1, 4), Config.cores.PROJETEIS):
+        for cor in interpolar_cores(random.randint(1, 4), (218, 165, 32), (202, 31, 123)):
             projetil_x = random.randint(0, Config.jogo.JANELA_LARGURA - Config.projetil.LARGURA)
-            cor = Config.cores.PROJETEIS.get(indice, "red")
             projetil = Projetil(projetil_x, -Config.projetil.ALTURA, Config.projetil.LARGURA, Config.projetil.ALTURA, Config.projetil.VELOCIDADE, cor)
             self.projeteis.append(projetil)
         self.projetil_tempo_inc = max(200, self.projetil_tempo_inc - 50)

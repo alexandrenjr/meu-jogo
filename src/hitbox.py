@@ -1,7 +1,7 @@
 import pygame
 
 class Hitbox:
-    def __init__(self, x, y, largura, altura):
+    def __init__(self, x: float, y: float, largura: float, altura: float) -> None:
         self.largura = largura
         self.altura = altura
         self.x = x

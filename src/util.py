@@ -1,6 +1,7 @@
 import pygame
 import random
 import os
+from tipos import *
 
 pygame.init()
 pygame.font.init()
@@ -8,30 +9,31 @@ FONTE_TEMPO = pygame.font.SysFont("Lexend", 30)
 FONTE_DERROTA = pygame.font.SysFont("Lexend", 60)
 
 
-def buscar_path_imagem(filename):
+def buscar_path_imagem(filename: str) -> str:
         """Retorna o caminho absoluto para a imagem de fundo."""
         base_path = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(base_path, '..', 'assets', filename)
 
 
-def centralizar(objeto, janela):
+def centralizar(objeto: Coordenadas2, janela: Coordenadas2) -> Coordenadas2:
     """Centraliza um objeto em um plano dado."""
     janela_largura, janela_altura = janela
     objeto_largura, objeto_altura = objeto
     return (janela_largura / 2 - objeto_largura / 2, janela_altura / 2 - objeto_altura / 2)
 
 
-def centralizar_x(objeto_largura, janela_largura):
+def centralizar_x(objeto_largura: int, janela_largura: int) -> int:
     """Centraliza um objeto no eixo x."""
     return janela_largura / 2 - objeto_largura / 2
 
 
-def obter_cor_aleatoria(i, cores):
+def obter_cor_aleatoria(i: int, cores: list[CorRGB]) -> list[int]:
     """Obtém i cores aleatórias num conjuto de cores."""
-    return random.sample(range(len(cores)), i)
+    indices = random.sample(range(len(cores)), i)
+    return [cores[indice] for indice in indices]
 
 
-def interpolar_cores(n, cor1=(0, 0, 0), cor2=(255, 255, 255)):
+def interpolar_cores(n: int=2, cor1: CorRGB=(0, 0, 0), cor2: CorRGB=(255, 255, 255)) -> list[CorRGB]:
     """Dados duas cores cor1 e cor2, é retornado n tons entre elas.
     Se o parâmetro n for menor que 2, cor1 será retornada.
 

@@ -3,7 +3,7 @@ from config import Config
 from util import interpolar_cores
 
 class Jogador:
-    def __init__(self, config):
+    def __init__(self, config: Config) -> None:
         self.rect = pygame.Rect(config.jogador.X, config.jogador.Y, config.jogador.LARGURA, config.jogador.ALTURA)
         self.cor = config.jogador.COR
         self.velocidade = config.jogador.VELOCIDADE
@@ -16,7 +16,7 @@ class Jogador:
         self.pontos_hitboxes = [hitbox for hitbox in Config.jogador.HITBOXES]
         self.hitboxes = [pygame.Rect(hitbox.x, hitbox.y, hitbox.largura, hitbox.altura) for hitbox in self.pontos_hitboxes]
 
-    def mover(self, teclas):
+    def mover(self, teclas) -> None:
         if teclas[pygame.K_LEFT] and self.rect.x - self.velocidade >= 0:
             self.rect.x -= self.velocidade
         if teclas[pygame.K_RIGHT] and self.rect.x + self.velocidade + self.rect.width <= self.janela_largura:
@@ -26,7 +26,7 @@ class Jogador:
         if teclas[pygame.K_DOWN] and self.rect.y + self.velocidade + self.rect.height <= self.janela_altura:
             self.rect.y += self.velocidade
 
-    def desenhar(self, janela):
+    def desenhar(self, janela) -> None:
         pontos_modulo_principal_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_modulo_principal]
         pontos_asas_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_asas]
         pontos_foquete_esquerdo_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_foquete_esquerdo]
