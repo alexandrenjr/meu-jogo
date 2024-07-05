@@ -1,12 +1,6 @@
-from util import centralizar_x
-from hitbox import Hitbox
-
-
-class JogoConfig:
-    """Configurações da janela do jogo."""
-    JANELA_LARGURA = 1366
-    JANELA_ALTURA = 768
-
+from jogo.jogo_config import JogoConfig
+from utils.helpers import centralizar_x
+from jogador.hitbox import Hitbox
 
 class JogadorConfig:
     """Configurações do jogador."""
@@ -129,26 +123,3 @@ class JogadorConfig:
         Hitbox(0.38333 * LARGURA, 0.96842 * ALTURA,	0.01111 * LARGURA, 0.01053 * ALTURA),
         Hitbox(0.60556 * LARGURA, 0.96842 * ALTURA,	0.01111 * LARGURA, 0.01053 * ALTURA)
     ]
-
-class ProjetilConfig:
-    """Configurações do projetil"""
-    LARGURA = 30
-    ALTURA = 20
-    VELOCIDADE = 3
-
-
-class Cores:
-    """Cores"""
-    PROJETEIS = {
-        0: "plum",
-        1: "plum1",
-        2: "plum2",
-        3: "plum3",
-        4: "plum4"
-    }
-
-class Config:
-    jogo = JogoConfig()
-    jogador = JogadorConfig()
-    projetil = ProjetilConfig()
-    cores = Cores()

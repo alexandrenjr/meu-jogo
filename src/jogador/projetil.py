@@ -1,11 +1,10 @@
 import pygame
-from tipos import *
+from utils.objeto import Objeto
+from utils.tipos import *
 
-class Projetil:
+class Projetil(Objeto):
     def __init__(self, x: float, y: float, largura: float, altura: float, velocidade: float, cor: CorRGB) -> None:
-        self.rect = pygame.Rect(x, y, largura, altura)
-        self.velocidade = velocidade
-        self.cor = cor
+        super().__init__(x, y, largura, altura, velocidade, cor)
 
     def mover(self, sentido: str="baixo") -> None:
         """Move um projétil a uma velocidade pré-determinada e a um sentido informado ("cima" ou "baixo")."""

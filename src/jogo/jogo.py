@@ -1,22 +1,24 @@
 import pygame
 import time
 import random
-from paralaxe import Paralaxe
-from jogador import Jogador
-from projetil import Projetil
-from util import *
-from config import *
+from jogo.jogo_config import JogoConfig
+from jogo.paralaxe import Paralaxe
+from jogador.jogador_config import JogadorConfig
+from jogador.jogador import Jogador
+from jogador.projetil_config import ProjetilConfig
+from jogador.projetil import Projetil
+from utils.helpers import *
 
 class Jogo:
     def __init__(self) -> None:
         """Inicialização do Pygame e configurações gerais."""
         pygame.font.init()
         pygame.display.set_caption("Meu jogo")
-        self.janela = pygame.display.set_mode((Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA))
-        camadas_imagens_caminhos = [buscar_path_imagem("layer1.png")]
+        self.janela = pygame.display.set_mode((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA))
+        camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png")]
         camadas_imagens_velocidades = [0.5, 2]
         self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
-        self.jogador = Jogador(Config)
+        self.jogador = Jogador(JogadorConfig)
         self.relogio = pygame.time.Clock()
         self.fonte_tempo = pygame.font.Font(None, 30)
         self.tempo_inicio = time.time()
@@ -33,8 +35,8 @@ class Jogo:
     def adicionar_projeteis(self) -> None:
         """Adiciona os projéteis que vêm de cima (meteoros)."""
         for cor in interpolar_cores(random.randint(1, 4), (218, 165, 32), (202, 31, 123)):
-            projetil_x = random.randint(0, Config.jogo.JANELA_LARGURA - Config.projetil.LARGURA)
-            projetil = Projetil(projetil_x, -Config.projetil.ALTURA, Config.projetil.LARGURA, Config.projetil.ALTURA, Config.projetil.VELOCIDADE, cor)
+            projetil_x = random.randint(0, JogoConfig.JANELA_LARGURA - ProjetilConfig.LARGURA)
+            projetil = Projetil(projetil_x, -ProjetilConfig.ALTURA, ProjetilConfig.LARGURA, ProjetilConfig.ALTURA, ProjetilConfig.VELOCIDADE, cor)
             self.projeteis.append(projetil)
         self.projetil_tempo_inc = max(200, self.projetil_tempo_inc - 50)
         self.projetil_quantidade = 0
@@ -42,8 +44,8 @@ class Jogo:
 
     def adicionar_nave_projeteis(self) -> None:
         """Adiciona projéteis que saem da nave (tiros)."""
-        projetil_x = self.jogador.rect.x + (Config.jogador.LARGURA / 2) - (Config.jogador.PROJETIL_LARGURA / 2)
-        projetil = Projetil(projetil_x, self.jogador.rect.y + Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_LARGURA, Config.jogador.PROJETIL_ALTURA, Config.jogador.PROJETIL_VELOCIDADE, (253, 0, 24))
+        projetil_x = self.jogador.rect.x + (JogadorConfig.LARGURA / 2) - (JogadorConfig.PROJETIL_LARGURA / 2)
+        projetil = Projetil(projetil_x, self.jogador.rect.y + JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_LARGURA, JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_VELOCIDADE, (253, 0, 24))
         self.nave_projeteis.append(projetil)
         self.nave_projetil_quantidade = 0
 
@@ -56,7 +58,7 @@ class Jogo:
                 projetil.mover("baixo")
             except ValueError as e:
                 print(e)
-            if projetil.rect.y > Config.jogo.JANELA_ALTURA:
+            if projetil.rect.y > JogoConfig.JANELA_ALTURA:
                 projeteis_para_remover.append(projetil)
             else:
                 for hitbox in self.jogador.hitboxes:
@@ -114,7 +116,7 @@ class Jogo:
     def mostrar_mensagem_derrota(self) -> None:
         """Mostra a mensagem de derrota."""
         texto_derrota = FONTE_DERROTA.render("Você perdeu!", 1, "white")
-        self.janela.blit(texto_derrota, centralizar((texto_derrota.get_width(), texto_derrota.get_height()), (Config.jogo.JANELA_LARGURA, Config.jogo.JANELA_ALTURA)))
+        self.janela.blit(texto_derrota, centralizar((texto_derrota.get_width(), texto_derrota.get_height()), (JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA)))
         pygame.display.update()
         pygame.time.delay(3000)
 

@@ -1,7 +1,7 @@
 import pygame
 import random
 import os
-from tipos import *
+from utils.tipos import *
 
 pygame.init()
 pygame.font.init()
@@ -9,10 +9,9 @@ FONTE_TEMPO = pygame.font.SysFont("Lexend", 30)
 FONTE_DERROTA = pygame.font.SysFont("Lexend", 60)
 
 
-def buscar_path_imagem(filename: str) -> str:
+def buscar_caminho_arquivo(nome_arquivo: str) -> str:
         """Retorna o caminho absoluto para a imagem de fundo."""
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(base_path, '..', 'assets', filename)
+        return os.path.join(os.getcwd(), 'assets', nome_arquivo)
 
 
 def centralizar(objeto: Coordenadas2, janela: Coordenadas2) -> Coordenadas2:

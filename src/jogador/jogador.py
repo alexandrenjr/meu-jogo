@@ -1,19 +1,18 @@
 import pygame
-from config import Config
-from util import interpolar_cores
+from utils.objeto import Objeto
+from jogo.jogo_config import JogoConfig
+from jogador.jogador_config import JogadorConfig
 
-class Jogador:
-    def __init__(self, config: Config) -> None:
-        self.rect = pygame.Rect(config.jogador.X, config.jogador.Y, config.jogador.LARGURA, config.jogador.ALTURA)
-        self.cor = config.jogador.COR
-        self.velocidade = config.jogador.VELOCIDADE
-        self.janela_largura = config.jogo.JANELA_LARGURA
-        self.janela_altura = config.jogo.JANELA_ALTURA
-        self.pontos_modulo_principal = config.jogador.PONTOS_MODULO_PRINCIPAL
-        self.pontos_asas = config.jogador.PONTOS_ASAS
-        self.pontos_foquete_esquerdo = config.jogador.PONTOS_FOQUETE_ESQUERDO
-        self.pontos_foquete_direito = config.jogador.PONTOS_FOQUETE_DIREITO
-        self.pontos_hitboxes = [hitbox for hitbox in Config.jogador.HITBOXES]
+class Jogador(Objeto):
+    def __init__(self, config: JogadorConfig) -> None:
+        super().__init__(config.X, config.Y, config.LARGURA, config.ALTURA, config.VELOCIDADE, config.COR)
+        self.janela_largura = JogoConfig.JANELA_LARGURA
+        self.janela_altura = JogoConfig.JANELA_ALTURA
+        self.pontos_modulo_principal = config.PONTOS_MODULO_PRINCIPAL
+        self.pontos_asas = config.PONTOS_ASAS
+        self.pontos_foquete_esquerdo = config.PONTOS_FOQUETE_ESQUERDO
+        self.pontos_foquete_direito = config.PONTOS_FOQUETE_DIREITO
+        self.pontos_hitboxes = [hitbox for hitbox in config.HITBOXES]
         self.hitboxes = [pygame.Rect(hitbox.x, hitbox.y, hitbox.largura, hitbox.altura) for hitbox in self.pontos_hitboxes]
 
     def mover(self, teclas) -> None:
