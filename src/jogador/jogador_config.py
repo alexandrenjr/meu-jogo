@@ -1,6 +1,6 @@
 from jogo.jogo_config import JogoConfig
 from utils.helpers import centralizar_x
-from jogador.hitbox import Hitbox
+from utils.hitbox import Hitbox
 
 class JogadorConfig:
     """Configurações do jogador."""
