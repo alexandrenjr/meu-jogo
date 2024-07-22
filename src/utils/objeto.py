@@ -12,5 +12,5 @@ class Objeto:
         pass
 
 
-    def desenhar(self) -> None:
-        pass
+    def desenhar(self, janela: pygame.Surface) -> None:
+        pygame.draw.rect(janela, self.cor, self.rect)

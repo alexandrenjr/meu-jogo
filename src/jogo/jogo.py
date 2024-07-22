@@ -49,10 +49,11 @@ class Jogo:
         self.inimigos_quantidade = 0
 
     def adicionar_lulanos(self) -> None:
-        numero_lulanos = random.randint(1, 7)
+        numero_lulanos = random.randint(1, 3)
         for _ in range(numero_lulanos):
             lulanos_x = random.randint(0, JogoConfig.JANELA_LARGURA - LulanosConfig.LARGURA)
-            lulanos = Lulanos(lulanos_x, -LulanosConfig.ALTURA, LulanosConfig.LARGURA, LulanosConfig.ALTURA, LulanosConfig.VELOCIDADE, (255, 255, 255))
+            cores = [(169, 208, 253), (38, 183, 116), (230, 215, 162)]
+            lulanos = Lulanos(lulanos_x, -LulanosConfig.ALTURA, LulanosConfig.LARGURA, LulanosConfig.ALTURA, LulanosConfig.VELOCIDADE, cores)
             self.lulanos.append(lulanos)
         self.lulanos_tempo_inc = max(200, self.lulanos_tempo_inc - 50)
         self.lulanos_quantidade = 0
@@ -148,11 +149,11 @@ class Jogo:
             self.lulanos_quantidade += tick
             self.tempo_decorrido = time.time() - self.tempo_inicio
 
-            if self.inimigos_quantidade > self.inimigos_tempo_inc:
-                self.adicionar_al()
+            # if self.inimigos_quantidade > self.inimigos_tempo_inc:
+            #     self.adicionar_al()
 
-            # if self.lulanos_quantidade > self.lulanos_tempo_inc:
-            #     self.adicionar_lulanos()
+            if self.lulanos_quantidade > self.lulanos_tempo_inc:
+                self.adicionar_lulanos()
 
             if self.nave_projetil_quantidade > self.nave_projetil_tempo:
                 self.adicionar_nave_projeteis()
@@ -168,7 +169,7 @@ class Jogo:
 
             self.jogador.mover(pygame.key.get_pressed())
             self.checar_colisoes_nave(self.als)
-            # self.checar_colisoes_nave(self.lulanos)
+            self.checar_colisoes_nave(self.lulanos)
             self.checar_colisoes_nave_projeteis()
 
             if self.colisao:

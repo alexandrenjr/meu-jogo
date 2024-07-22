@@ -16,4 +16,4 @@ class Projetil(Objeto):
             raise ValueError(f"Valor invalido para sentido: {sentido}, Deve ser 'cima' ou 'baixo'.")
 
     def desenhar(self, janela) -> None:
-        pygame.draw.rect(janela, self.cor, self.rect)
+        super().desenhar(janela)
