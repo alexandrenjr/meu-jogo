@@ -5,8 +5,9 @@ from utils.tipos import *
 
 pygame.init()
 pygame.font.init()
-FONTE_TEMPO = pygame.font.SysFont("Lexend", 30)
-FONTE_DERROTA = pygame.font.SysFont("Lexend", 60)
+TEXTO_TEMPO = pygame.font.SysFont("Lexend", 30)
+TEXTO_DERROTA = pygame.font.SysFont("Lexend", 60)
+TEXTO_PONTOS = pygame.font.SysFont("Lexend", 30)
 
 
 def buscar_caminho_arquivo(nome_arquivo: str) -> str:

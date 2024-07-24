@@ -28,6 +28,7 @@ class Lulanos(Objeto):
         self.hitboxes_cabeca = [pygame.Rect(hitbox.x, hitbox.y, hitbox.largura, hitbox.altura) for hitbox in self.pontos_cabeca]
         self.hitboxes_joias = [pygame.Rect(hitbox.x, hitbox.y, hitbox.largura, hitbox.altura) for hitbox in self.pontos_joias]
         self.hitboxes_tentaculos = [pygame.Rect(hitbox.x, hitbox.y, hitbox.largura, hitbox.altura) for hitbox in self.pontos_tentaculos]
+        self.hitboxes = self.hitboxes_cabeca + self.hitboxes_joias + self.hitboxes_tentaculos;
         self.cores = cores
 
     def mover(self) -> None:

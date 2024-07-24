@@ -23,14 +23,17 @@ class Jogo:
         self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(JogadorConfig)
         self.relogio = pygame.time.Clock()
-        self.fonte_tempo = pygame.font.Font(None, 30)
+        self.pontos = 0
+        self.texto_tempo = pygame.font.Font(None, 30)
+        self.texto_derrota = pygame.font.Font(None, 30)
+        self.texto_pontos = pygame.font.Font(None, 30)
         self.tempo_inicio = time.time()
         self.tempo_decorrido = 0
         self.als = []
         self.lulanos = []
         self.nave_projeteis = []
-        self.inimigos_tempo_inc = 2000
-        self.inimigos_quantidade = 0
+        self.al_tempo_inc = 2000
+        self.al_quantidade = 0
         self.lulanos_tempo_inc = 3000
         self.lulanos_quantidade = 0
         self.nave_projetil_tempo = 150
@@ -40,13 +43,13 @@ class Jogo:
 
     def adicionar_al(self) -> None:
         """Adiciona os projéteis que vêm de cima (meteoros)."""
-        numero_inimigos = random.randint(1, 4)
-        for _ in range(numero_inimigos):
+        numero_als = random.randint(1, 4)
+        for _ in range(numero_als):
             al_x = random.randint(0, JogoConfig.JANELA_LARGURA - AlConfig.LARGURA)
             al = Al(al_x, -AlConfig.ALTURA, AlConfig.LARGURA, AlConfig.ALTURA, AlConfig.VELOCIDADE, AlConfig.COR)
             self.als.append(al)
-        self.inimigos_tempo_inc = max(200, self.inimigos_tempo_inc - 50)
-        self.inimigos_quantidade = 0
+        self.al_tempo_inc = max(200, self.al_tempo_inc - 50)
+        self.al_quantidade = 0
 
     def adicionar_lulanos(self) -> None:
         numero_lulanos = random.randint(1, 3)
@@ -78,12 +81,13 @@ class Jogo:
             if inimigo.rect.y > JogoConfig.JANELA_ALTURA:
                 inimigos_para_remover.append(inimigo)
             else:
-                for hitbox in self.jogador.hitboxes:
-                    if inimigo.rect.colliderect(hitbox):
-                        inimigos_para_remover.append(inimigo)
-                        self.colisao = True
-                if self.colisao:
-                    break
+                for inimigo_hitbox in inimigo.hitboxes:
+                    for hitbox in self.jogador.hitboxes:
+                        if inimigo_hitbox.colliderect(hitbox):
+                            inimigos_para_remover.append(inimigo)
+                            self.colisao = True
+                    if self.colisao:
+                        break
         
         for inimigo_para_remover in inimigos_para_remover:
             if inimigo_para_remover in inimigos:
@@ -94,6 +98,7 @@ class Jogo:
         """Checa se um dos projéteis da nave (tiro) atingiu algum projétil (meteoro)."""
         projeteis_para_remover = []
         nave_projeteis_para_remover = []
+        
         for nave_projetil in self.nave_projeteis:
             try:
                 nave_projetil.mover("cima")
@@ -103,13 +108,21 @@ class Jogo:
             if nave_projetil.rect.y < 0:
                 nave_projeteis_para_remover.append(nave_projetil)
             else:
-                for invasor in self.als:
-                    if invasor.rect.colliderect(nave_projetil):
-                        projeteis_para_remover.append(invasor)
+                for al in self.als:
+                    if al.rect.colliderect(nave_projetil):
+                        projeteis_para_remover.append(al)
+                        self.pontos += 1
+
+                for lulano in self.lulanos:
+                    if lulano.rect.colliderect(nave_projetil):
+                        projeteis_para_remover.append(lulano)
+                        self.pontos += 1
 
         for projetil in projeteis_para_remover:
             if projetil in self.als:
                 self.als.remove(projetil)
+            elif projetil in self.lulanos:
+                self.lulanos.remove(projetil)
 
         for nave_projetil in nave_projeteis_para_remover:
             if nave_projetil in self.nave_projeteis:
@@ -121,21 +134,30 @@ class Jogo:
         self.janela.fill((0, 0, 0))
         self.paralaxe.rolar()
         self.jogador.desenhar(self.janela)
-        self.fonte_tempo = FONTE_TEMPO.render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
+        self.texto_tempo = TEXTO_TEMPO.render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
+        self.texto_pontos = TEXTO_PONTOS.render(f"Pontos: {self.pontos}", 1, "white")
+
         for al in self.als:
             al.desenhar(self.janela)
         for lulanos in self.lulanos:
             lulanos.desenhar(self.janela)
         for nave_projetil in self.nave_projeteis:
             nave_projetil.desenhar(self.janela)
-        self.janela.blit(self.fonte_tempo, (10, 10))
+
+        texto_tempo_coordenadas = (10, 10)
+        texto_pontos_coordenadas = (centralizar_x(self.texto_pontos.get_width(), self.janela.get_width()), 10)
+        self.janela.blit(self.texto_tempo, texto_tempo_coordenadas)
+        self.janela.blit(self.texto_pontos, texto_pontos_coordenadas)
         pygame.display.update()
 
 
     def mostrar_mensagem_derrota(self) -> None:
         """Mostra a mensagem de derrota."""
-        texto_derrota = FONTE_DERROTA.render("Você perdeu!", 1, "white")
-        self.janela.blit(texto_derrota, centralizar((texto_derrota.get_width(), texto_derrota.get_height()), (JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA)))
+        self.texto_derrota = TEXTO_DERROTA.render("Você perdeu!", 1, "white")
+        x_medio_janela = (self.texto_derrota.get_width(), self.texto_derrota.get_height())
+        y_medio_janela = (JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA)
+        texto_derrota_coordenadas = centralizar(x_medio_janela, y_medio_janela)
+        self.janela.blit(self.texto_derrota, texto_derrota_coordenadas)
         pygame.display.update()
         pygame.time.delay(3000)
 
@@ -145,12 +167,12 @@ class Jogo:
         while True:
             tick = self.relogio.tick(60)
             self.nave_projetil_quantidade += tick
-            self.inimigos_quantidade += tick
+            self.al_quantidade += tick
             self.lulanos_quantidade += tick
             self.tempo_decorrido = time.time() - self.tempo_inicio
 
-            # if self.inimigos_quantidade > self.inimigos_tempo_inc:
-            #     self.adicionar_al()
+            if self.al_quantidade > self.al_tempo_inc:
+                self.adicionar_al()
 
             if self.lulanos_quantidade > self.lulanos_tempo_inc:
                 self.adicionar_lulanos()
