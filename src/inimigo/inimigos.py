@@ -13,7 +13,10 @@ class Al(Objeto):
     def mover(self) -> None:
         self.rect.y += self.velocidade
 
-    def desenhar(self, janela: pygame.Surface) -> None:
+    def desenhar(self, janela: pygame.Surface, explodiu: bool = False) -> None:
+        if explodiu:
+            pygame.draw.rect(janela, (255, 0, 0), self.rect)
+
         for i, hitbox in enumerate(self.hitboxes):
             hitbox.x = self.rect.x + self.pontos_hitboxes[i].x
             hitbox.y = self.rect.y + self.pontos_hitboxes[i].y

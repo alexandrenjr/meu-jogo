@@ -2,6 +2,7 @@ import pygame
 from utils.objeto import Objeto
 from jogo.jogo_config import JogoConfig
 from jogador.jogador_config import JogadorConfig
+import math
 
 class Jogador(Objeto):
     def __init__(self, config: JogadorConfig) -> None:
@@ -16,14 +17,28 @@ class Jogador(Objeto):
         self.hitboxes = [pygame.Rect(hitbox.x, hitbox.y, hitbox.largura, hitbox.altura) for hitbox in self.pontos_hitboxes]
 
     def mover(self, teclas) -> None:
-        if teclas[pygame.K_LEFT] and self.rect.x - self.velocidade >= 0:
-            self.rect.x -= self.velocidade
-        if teclas[pygame.K_RIGHT] and self.rect.x + self.velocidade + self.rect.width <= self.janela_largura:
-            self.rect.x += self.velocidade
-        if teclas[pygame.K_UP] and self.rect.y - self.velocidade >= 0:
-            self.rect.y -= self.velocidade
-        if teclas[pygame.K_DOWN] and self.rect.y + self.velocidade + self.rect.height <= self.janela_altura:
-            self.rect.y += self.velocidade
+        dx, dy = 0, 0
+        
+        if teclas[pygame.K_LEFT]:
+            dx -= 1
+        if teclas[pygame.K_RIGHT]:
+            dx += 1
+        if teclas[pygame.K_UP]:
+            dy -= 1
+        if teclas[pygame.K_DOWN]:
+            dy += 1
+
+        if dx != 0 and dy != 0:
+            dx *= self.velocidade / math.sqrt(2)
+            dy *= self.velocidade / math.sqrt(2)
+        else:
+            dx *= self.velocidade
+            dy *= self.velocidade
+
+        if self.rect.x + dx >= 0 and self.rect.x + dx + self.rect.width <= self.janela_largura:
+            self.rect.x += dx
+        if self.rect.y + dy >= 0 and self.rect.y + dy + self.rect.height <= self.janela_altura:
+            self.rect.y += dy
 
     def desenhar(self, janela) -> None:
         pontos_modulo_principal_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_modulo_principal]

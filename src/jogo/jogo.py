@@ -5,7 +5,6 @@ from jogo.jogo_config import JogoConfig
 from jogo.paralaxe import Paralaxe
 from jogador.jogador_config import JogadorConfig
 from jogador.jogador import Jogador
-from jogador.projetil_config import ProjetilConfig
 from jogador.projetil import Projetil
 from inimigo.inimigos_config import AlConfig, LulanosConfig
 from inimigo.inimigos import Al, Lulanos
@@ -96,7 +95,7 @@ class Jogo:
 
     def checar_colisoes_nave_projeteis(self) -> None:
         """Checa se um dos projéteis da nave (tiro) atingiu algum projétil (meteoro)."""
-        projeteis_para_remover = []
+        inimigos_para_remover = []
         nave_projeteis_para_remover = []
         
         for nave_projetil in self.nave_projeteis:
@@ -110,19 +109,21 @@ class Jogo:
             else:
                 for al in self.als:
                     if al.rect.colliderect(nave_projetil):
-                        projeteis_para_remover.append(al)
+                        al.desenhar(self.janela, True)
+                        al.atingido = True
+                        inimigos_para_remover.append(al)
                         self.pontos += 1
 
                 for lulano in self.lulanos:
                     if lulano.rect.colliderect(nave_projetil):
-                        projeteis_para_remover.append(lulano)
+                        inimigos_para_remover.append(lulano)
                         self.pontos += 1
 
-        for projetil in projeteis_para_remover:
-            if projetil in self.als:
-                self.als.remove(projetil)
-            elif projetil in self.lulanos:
-                self.lulanos.remove(projetil)
+        for inimigo in inimigos_para_remover:
+            if inimigo in self.als:
+                self.als.remove(inimigo)
+            elif inimigo in self.lulanos:
+                self.lulanos.remove(inimigo)
 
         for nave_projetil in nave_projeteis_para_remover:
             if nave_projetil in self.nave_projeteis:

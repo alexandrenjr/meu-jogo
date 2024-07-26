@@ -6,6 +6,7 @@ class Objeto:
         self.rect = pygame.Rect(x, y, largura, altura)
         self.velocidade = velocidade
         self.cor = cor
+        self.atingido = False
 
 
     def mover(self) -> None:
