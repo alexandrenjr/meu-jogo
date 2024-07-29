@@ -14,13 +14,20 @@ from utils.objeto import Objeto
 class Jogo:
     def __init__(self) -> None:
         """Inicialização do Pygame e configurações gerais."""
-        pygame.font.init()
+        pygame.init()
+        pygame.mixer.init()
         pygame.display.set_caption("Meu jogo")
         self.janela = pygame.display.set_mode((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA))
-        camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png")]
+        camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png", "assets/images")]
         camadas_imagens_velocidades = [1, 3]
         self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(JogadorConfig)
+        self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("Interstellar - No Time For Caution (Docking Scene) 8 Bit.wav", "assets/sounds"))
+        self.som_tiro = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-short-laser-gun-shot-1670.wav", "assets/sounds"))
+        self.som_tiro.set_volume(0.3)
+        self.som_derrota = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-arcade-space-shooter-dead-notification-272.wav", "assets/sounds"))
+        self.som_inimigo_abatido = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-space-coin-win-notification-271.wav", "assets/sounds"))
+        self.som_inimigo_abatido.set_volume(0.3)
         self.relogio = pygame.time.Clock()
         self.pontos = 0
         self.texto_tempo = pygame.font.Font(None, 30)
@@ -67,6 +74,7 @@ class Jogo:
         projetil = Projetil(projetil_x, self.jogador.rect.y + JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_LARGURA, JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_VELOCIDADE, (253, 0, 24))
         self.nave_projeteis.append(projetil)
         self.nave_projetil_quantidade = 0
+        self.som_tiro.play()
 
 
     def checar_colisoes_nave(self, inimigos: Objeto) -> None:
@@ -122,8 +130,10 @@ class Jogo:
         for inimigo in inimigos_para_remover:
             if inimigo in self.als:
                 self.als.remove(inimigo)
+                self.som_inimigo_abatido.play()
             elif inimigo in self.lulanos:
                 self.lulanos.remove(inimigo)
+                self.som_inimigo_abatido.play()
 
         for nave_projetil in nave_projeteis_para_remover:
             if nave_projetil in self.nave_projeteis:
@@ -154,6 +164,8 @@ class Jogo:
 
     def mostrar_mensagem_derrota(self) -> None:
         """Mostra a mensagem de derrota."""
+        self.musica_fundo.stop()
+        self.som_derrota.play()
         self.texto_derrota = TEXTO_DERROTA.render("Você perdeu!", 1, "white")
         x_medio_janela = (self.texto_derrota.get_width(), self.texto_derrota.get_height())
         y_medio_janela = (JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA)
@@ -165,6 +177,7 @@ class Jogo:
 
     def executar(self) -> None:
         """Execução do jogo."""
+        self.musica_fundo.play(-1)
         while True:
             tick = self.relogio.tick(60)
             self.nave_projetil_quantidade += tick

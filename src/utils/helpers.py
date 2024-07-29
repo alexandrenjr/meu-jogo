@@ -3,16 +3,15 @@ import random
 import os
 from utils.tipos import *
 
-pygame.init()
 pygame.font.init()
 TEXTO_TEMPO = pygame.font.SysFont("Lexend", 30)
 TEXTO_DERROTA = pygame.font.SysFont("Lexend", 60)
 TEXTO_PONTOS = pygame.font.SysFont("Lexend", 30)
 
 
-def buscar_caminho_arquivo(nome_arquivo: str) -> str:
+def buscar_caminho_arquivo(nome_arquivo: str, pasta: str = "") -> str:
         """Retorna o caminho absoluto para a imagem de fundo."""
-        return os.path.join(os.getcwd(), 'assets', nome_arquivo)
+        return os.path.join(os.getcwd(), pasta, nome_arquivo)
 
 
 def centralizar(objeto: Coordenadas2, janela: Coordenadas2) -> Coordenadas2:
