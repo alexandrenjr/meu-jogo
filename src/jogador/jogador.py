@@ -19,13 +19,13 @@ class Jogador(Objeto):
     def mover(self, teclas) -> None:
         dx, dy = 0, 0
         
-        if teclas[pygame.K_LEFT]:
+        if teclas[pygame.K_LEFT] or teclas[pygame.K_a]:
             dx -= 1
-        if teclas[pygame.K_RIGHT]:
+        if teclas[pygame.K_RIGHT] or teclas[pygame.K_d]:
             dx += 1
-        if teclas[pygame.K_UP]:
+        if teclas[pygame.K_UP] or teclas[pygame.K_w]:
             dy -= 1
-        if teclas[pygame.K_DOWN]:
+        if teclas[pygame.K_DOWN] or teclas[pygame.K_s]:
             dy += 1
 
         if dx != 0 and dy != 0:
