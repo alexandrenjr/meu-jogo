@@ -17,15 +17,16 @@ class Jogo:
         pygame.init()
         pygame.mixer.init()
         pygame.display.set_caption("Meu jogo")
-        self.janela = pygame.display.set_mode((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA))
+        self.janela = pygame.display.set_mode((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA), pygame.FULLSCREEN)
         camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png", "assets/images")]
         camadas_imagens_velocidades = [1, 3]
         self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(JogadorConfig)
-        self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("Interstellar - No Time For Caution (Docking Scene) 8 Bit.wav", "assets/sounds"))
+        # self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("8 Bit Eye of the Tiger - Survivor.wav", "assets/sounds"))
         self.som_tiro = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-short-laser-gun-shot-1670.wav", "assets/sounds"))
         self.som_tiro.set_volume(0.3)
         self.som_derrota = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-arcade-space-shooter-dead-notification-272.wav", "assets/sounds"))
+        self.som_derrota.set_volume(0.3)
         self.som_inimigo_abatido = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-space-coin-win-notification-271.wav", "assets/sounds"))
         self.som_inimigo_abatido.set_volume(0.3)
         self.relogio = pygame.time.Clock()
@@ -164,7 +165,7 @@ class Jogo:
 
     def mostrar_mensagem_derrota(self) -> None:
         """Mostra a mensagem de derrota."""
-        self.musica_fundo.stop()
+        # self.musica_fundo.stop()
         self.som_derrota.play()
         self.texto_derrota = TEXTO_DERROTA.render("Você perdeu!", 1, "white")
         x_medio_janela = (self.texto_derrota.get_width(), self.texto_derrota.get_height())
@@ -177,7 +178,7 @@ class Jogo:
 
     def executar(self) -> None:
         """Execução do jogo."""
-        self.musica_fundo.play(-1)
+        # self.musica_fundo.play(-1)
         while True:
             tick = self.relogio.tick(60)
             self.nave_projetil_quantidade += tick
