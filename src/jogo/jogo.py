@@ -17,10 +17,17 @@ class Jogo:
         pygame.init()
         pygame.mixer.init()
         pygame.display.set_caption("Meu jogo")
-        self.janela = pygame.display.set_mode((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA), pygame.FULLSCREEN)
+
+        dimensoes_sistema_atual = pygame.display.Info()
+        sistema_largura = dimensoes_sistema_atual.current_w
+        sistema_altura = dimensoes_sistema_atual.current_h
+
+        self.janela = pygame.display.set_mode((sistema_largura, sistema_altura), pygame.FULLSCREEN | pygame.RESIZABLE)
+        self.superficie = pygame.Surface((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA))
+
         camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png", "assets/images")]
         camadas_imagens_velocidades = [1, 3]
-        self.paralaxe = Paralaxe(self.janela, camadas_imagens_caminhos, camadas_imagens_velocidades)
+        self.paralaxe = Paralaxe(self.superficie, camadas_imagens_caminhos, camadas_imagens_velocidades)
         self.jogador = Jogador(JogadorConfig)
         # self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("8 Bit Eye of the Tiger - Survivor.wav", "assets/sounds"))
         self.som_tiro = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-short-laser-gun-shot-1670.wav", "assets/sounds"))
@@ -49,7 +56,7 @@ class Jogo:
 
 
     def adicionar_al(self) -> None:
-        """Adiciona os projéteis que vêm de cima (meteoros)."""
+        """Adiciona um inimigo tipo Al."""
         numero_als = random.randint(1, 4)
         for _ in range(numero_als):
             al_x = random.randint(0, JogoConfig.JANELA_LARGURA - AlConfig.LARGURA)
@@ -59,6 +66,7 @@ class Jogo:
         self.al_quantidade = 0
 
     def adicionar_lulanos(self) -> None:
+        """Adiciona um inimigo tipo Lulanos."""
         numero_lulanos = random.randint(1, 3)
         for _ in range(numero_lulanos):
             lulanos_x = random.randint(0, JogoConfig.JANELA_LARGURA - LulanosConfig.LARGURA)
@@ -70,7 +78,7 @@ class Jogo:
 
 
     def adicionar_nave_projeteis(self) -> None:
-        """Adiciona projéteis que saem da nave (tiros)."""
+        """Adiciona projéteis disparados pela nave."""
         projetil_x = self.jogador.rect.x + (JogadorConfig.LARGURA / 2) - (JogadorConfig.PROJETIL_LARGURA / 2)
         projetil = Projetil(projetil_x, self.jogador.rect.y + JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_LARGURA, JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_VELOCIDADE, (253, 0, 24))
         self.nave_projeteis.append(projetil)
@@ -79,7 +87,7 @@ class Jogo:
 
 
     def checar_colisoes_nave(self, inimigos: Objeto) -> None:
-        """Checa se um dos projéteis (meteoro) atingiu a nave."""
+        """Checa colisões entre a nave e os inimigos."""
         inimigos_para_remover = []
         for inimigo in inimigos:
             try:
@@ -103,7 +111,7 @@ class Jogo:
 
 
     def checar_colisoes_nave_projeteis(self) -> None:
-        """Checa se um dos projéteis da nave (tiro) atingiu algum projétil (meteoro)."""
+        """Checa colisões entre os projéteis da nave e os inimigos."""
         inimigos_para_remover = []
         nave_projeteis_para_remover = []
         
@@ -143,24 +151,27 @@ class Jogo:
 
     def desenhar(self) -> None:
         """Desenha o jogo."""
+        self.superficie.fill((0, 0, 0))
         self.janela.fill((0, 0, 0))
         self.paralaxe.rolar()
-        self.jogador.desenhar(self.janela)
+        self.jogador.desenhar(self.superficie)
+        for al in self.als:
+            al.desenhar(self.superficie)
+        for lulanos in self.lulanos:
+            lulanos.desenhar(self.superficie)
+        for nave_projetil in self.nave_projeteis:
+            nave_projetil.desenhar(self.superficie)
+        
+        self.janela.blit(pygame.transform.scale(self.superficie, self.janela.get_size()), (0, 0))
+        
         self.texto_tempo = TEXTO_TEMPO.render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
         self.texto_pontos = TEXTO_PONTOS.render(f"Pontos: {self.pontos}", 1, "white")
-
-        for al in self.als:
-            al.desenhar(self.janela)
-        for lulanos in self.lulanos:
-            lulanos.desenhar(self.janela)
-        for nave_projetil in self.nave_projeteis:
-            nave_projetil.desenhar(self.janela)
-
         texto_tempo_coordenadas = (10, 10)
         texto_pontos_coordenadas = (centralizar_x(self.texto_pontos.get_width(), self.janela.get_width()), 10)
         self.janela.blit(self.texto_tempo, texto_tempo_coordenadas)
         self.janela.blit(self.texto_pontos, texto_pontos_coordenadas)
-        pygame.display.update()
+        
+        pygame.display.flip()
 
 
     def mostrar_mensagem_derrota(self) -> None:
