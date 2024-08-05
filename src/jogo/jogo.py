@@ -15,20 +15,37 @@ class Jogo:
     def __init__(self) -> None:
         """Inicialização do Pygame e configurações gerais."""
         pygame.init()
-        pygame.mixer.init()
+        self.configurar_tela()
+        self.configurar_plano_fundo()
+        self.configurar_sons()
+        self.inicializar_objetos_jogo()
+        self.inicializar_estado_jogo()
+
+
+    def configurar_tela(self) -> None:
+        """Configura as propriedades da tela do jogo."""
+        dimensoes_sistema_atual = pygame.display.Info()
+        self.sistema_largura, self.sistema_altura = dimensoes_sistema_atual.current_w, dimensoes_sistema_atual.current_h
+        self.janela = pygame.display.set_mode((self.sistema_largura, self.sistema_altura), pygame.FULLSCREEN | pygame.RESIZABLE)
+        self.largura, self.altura = JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA
+        self.superficie = pygame.Surface((self.largura, self.altura))
         pygame.display.set_caption("Meu jogo")
 
-        dimensoes_sistema_atual = pygame.display.Info()
-        sistema_largura = dimensoes_sistema_atual.current_w
-        sistema_altura = dimensoes_sistema_atual.current_h
 
-        self.janela = pygame.display.set_mode((sistema_largura, sistema_altura), pygame.FULLSCREEN | pygame.RESIZABLE)
-        self.superficie = pygame.Surface((JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA))
-
+    def configurar_plano_fundo(self) -> None:
+        """Carrega e configura o plano de fundo do jogo."""
         camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png", "assets/images")]
         camadas_imagens_velocidades = [1, 3]
         self.paralaxe = Paralaxe(self.superficie, camadas_imagens_caminhos, camadas_imagens_velocidades)
-        self.jogador = Jogador(JogadorConfig)
+
+
+    # def transicao_tela(self, ) -> None:
+    #     self.superficie_transicao = pygame.Surface(su)
+
+
+    def configurar_sons(self) -> None:
+        """Carrega e inicia os sons do jogo."""
+        pygame.mixer.init()
         # self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("8 Bit Eye of the Tiger - Survivor.wav", "assets/sounds"))
         self.som_tiro = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-short-laser-gun-shot-1670.wav", "assets/sounds"))
         self.som_tiro.set_volume(0.3)
@@ -36,6 +53,18 @@ class Jogo:
         self.som_derrota.set_volume(0.3)
         self.som_inimigo_abatido = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-space-coin-win-notification-271.wav", "assets/sounds"))
         self.som_inimigo_abatido.set_volume(0.3)
+
+
+    def inicializar_objetos_jogo(self) -> None:
+        """Inicializa os objetos e entidades do jogo."""
+        self.jogador = Jogador(JogadorConfig)
+        self.als = []
+        self.lulanos = []
+        self.nave_projeteis = []
+
+
+    def inicializar_estado_jogo(self) -> None:
+        """Inicializa as variáveis de estado do jogo."""
         self.relogio = pygame.time.Clock()
         self.pontos = 0
         self.texto_tempo = pygame.font.Font(None, 30)
@@ -43,9 +72,6 @@ class Jogo:
         self.texto_pontos = pygame.font.Font(None, 30)
         self.tempo_inicio = time.time()
         self.tempo_decorrido = 0
-        self.als = []
-        self.lulanos = []
-        self.nave_projeteis = []
         self.al_tempo_inc = 2000
         self.al_quantidade = 0
         self.lulanos_tempo_inc = 3000
@@ -180,7 +206,7 @@ class Jogo:
         self.som_derrota.play()
         self.texto_derrota = TEXTO_DERROTA.render("Você perdeu!", 1, "white")
         x_medio_janela = (self.texto_derrota.get_width(), self.texto_derrota.get_height())
-        y_medio_janela = (JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA)
+        y_medio_janela = (self.sistema_largura, self.sistema_altura)
         texto_derrota_coordenadas = centralizar(x_medio_janela, y_medio_janela)
         self.janela.blit(self.texto_derrota, texto_derrota_coordenadas)
         pygame.display.update()

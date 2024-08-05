@@ -40,7 +40,7 @@ class Jogador(Objeto):
         if self.rect.y + dy >= 0 and self.rect.y + dy + self.rect.height <= self.janela_altura:
             self.rect.y += dy
 
-    def desenhar(self, janela) -> None:
+    def desenhar(self, janela: pygame.Surface) -> None:
         pontos_modulo_principal_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_modulo_principal]
         pontos_asas_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_asas]
         pontos_foquete_esquerdo_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_foquete_esquerdo]

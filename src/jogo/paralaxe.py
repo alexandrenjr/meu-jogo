@@ -1,7 +1,7 @@
 import pygame
 
 class Paralaxe:
-    def __init__(self, janela, camadas_imagens_caminhos, camadas_imagens_velocidades) -> None:
+    def __init__(self, janela: pygame.Surface, camadas_imagens_caminhos: list[pygame.Surface], camadas_imagens_velocidades: list[float]) -> None:
         self.janela = janela
         self.camadas_imagens = [pygame.image.load(imagem_caminho).convert_alpha() for imagem_caminho in camadas_imagens_caminhos]
         self.camadas_imagens_alturas = [camada_imagem.get_height() for camada_imagem in self.camadas_imagens]
