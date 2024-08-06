@@ -1,12 +1,6 @@
-import pygame
 import random
 import os
 from utils.tipos import *
-
-pygame.font.init()
-TEXTO_TEMPO = pygame.font.SysFont("Lexend", 30)
-TEXTO_DERROTA = pygame.font.SysFont("Lexend", 60)
-TEXTO_PONTOS = pygame.font.SysFont("Lexend", 30)
 
 
 def buscar_caminho_arquivo(nome_arquivo: str, pasta: str = "") -> str:

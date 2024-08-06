@@ -15,6 +15,7 @@ class Jogo:
     def __init__(self) -> None:
         """Inicialização do Pygame e configurações gerais."""
         pygame.init()
+        pygame.font.init()
         self.configurar_tela()
         self.configurar_plano_fundo()
         self.configurar_sons()
@@ -39,14 +40,27 @@ class Jogo:
         self.paralaxe = Paralaxe(self.superficie, camadas_imagens_caminhos, camadas_imagens_velocidades)
 
 
-    # def transicao_tela(self, ) -> None:
-    #     self.superficie_transicao = pygame.Surface(su)
+    def transicao_tela(self, superficie: pygame.Surface, duracao: float = 0.001, aparecer_gradualmente: str = True) -> None:
+        passo = 5
+        atraso = int(duracao * 1000 / (255 // passo))
+
+        if aparecer_gradualmente:
+            intervalo_alfa = range(0, 256, passo)
+        else:
+            intervalo_alfa = range(255, -1, -passo)
+
+        for alfa in intervalo_alfa:
+            superficie.set_alpha(alfa)
+            self.janela.fill((0, 0, 0))
+            self.janela.blit(pygame.transform.scale(superficie, self.janela.get_size()), (0, 0))
+            pygame.display.update()
+            pygame.time.delay(atraso)
 
 
     def configurar_sons(self) -> None:
         """Carrega e inicia os sons do jogo."""
         pygame.mixer.init()
-        # self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("8 Bit Eye of the Tiger - Survivor.wav", "assets/sounds"))
+        self.musica_fundo = pygame.mixer.Sound(buscar_caminho_arquivo("Manowar - Return Of The Warlord (8 bit).mp3", "assets/sounds"))
         self.som_tiro = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-short-laser-gun-shot-1670.wav", "assets/sounds"))
         self.som_tiro.set_volume(0.3)
         self.som_derrota = pygame.mixer.Sound(buscar_caminho_arquivo("mixkit-arcade-space-shooter-dead-notification-272.wav", "assets/sounds"))
@@ -79,6 +93,11 @@ class Jogo:
         self.nave_projetil_tempo = 150
         self.nave_projetil_quantidade = 0
         self.colisao = False
+        self.fontes = {
+            "tempo": pygame.font.SysFont(JogoConfig.FONTE, JogoConfig.TAMANHO_TEXTO_PONTOS),
+            "pontos": pygame.font.SysFont(JogoConfig.FONTE, JogoConfig.TAMANHO_TEXTO_PONTOS),
+            "derrota": pygame.font.SysFont(JogoConfig.FONTE, JogoConfig.TAMANHO_TEXTO_DERROTA)
+        }
 
 
     def adicionar_al(self) -> None:
@@ -90,6 +109,7 @@ class Jogo:
             self.als.append(al)
         self.al_tempo_inc = max(200, self.al_tempo_inc - 50)
         self.al_quantidade = 0
+
 
     def adicionar_lulanos(self) -> None:
         """Adiciona um inimigo tipo Lulanos."""
@@ -175,7 +195,7 @@ class Jogo:
                 self.nave_projeteis.remove(nave_projetil)
 
 
-    def desenhar(self) -> None:
+    def desenhar(self, atualizar_tela: bool = True) -> None:
         """Desenha o jogo."""
         self.superficie.fill((0, 0, 0))
         self.janela.fill((0, 0, 0))
@@ -190,32 +210,37 @@ class Jogo:
         
         self.janela.blit(pygame.transform.scale(self.superficie, self.janela.get_size()), (0, 0))
         
-        self.texto_tempo = TEXTO_TEMPO.render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
-        self.texto_pontos = TEXTO_PONTOS.render(f"Pontos: {self.pontos}", 1, "white")
+        self.texto_tempo = self.fontes["tempo"].render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
+        self.texto_pontos = self.fontes["pontos"].render(f"Pontos: {self.pontos}", 1, "white")
         texto_tempo_coordenadas = (10, 10)
         texto_pontos_coordenadas = (centralizar_x(self.texto_pontos.get_width(), self.janela.get_width()), 10)
         self.janela.blit(self.texto_tempo, texto_tempo_coordenadas)
         self.janela.blit(self.texto_pontos, texto_pontos_coordenadas)
         
-        pygame.display.flip()
+        if atualizar_tela:
+            pygame.display.flip()
 
 
     def mostrar_mensagem_derrota(self) -> None:
         """Mostra a mensagem de derrota."""
-        # self.musica_fundo.stop()
+        self.musica_fundo.stop()
         self.som_derrota.play()
-        self.texto_derrota = TEXTO_DERROTA.render("Você perdeu!", 1, "white")
+        self.texto_derrota = self.fontes["derrota"].render("Você perdeu!", 1, "white")
         x_medio_janela = (self.texto_derrota.get_width(), self.texto_derrota.get_height())
         y_medio_janela = (self.sistema_largura, self.sistema_altura)
         texto_derrota_coordenadas = centralizar(x_medio_janela, y_medio_janela)
         self.janela.blit(self.texto_derrota, texto_derrota_coordenadas)
         pygame.display.update()
-        pygame.time.delay(3000)
+        pygame.time.delay(1500)
+        self.transicao_tela(self.superficie, 0.001, False)
 
 
     def executar(self) -> None:
         """Execução do jogo."""
-        # self.musica_fundo.play(-1)
+        self.musica_fundo.play(-1)
+        self.desenhar(False)
+        self.transicao_tela(self.superficie)
+
         while True:
             tick = self.relogio.tick(60)
             self.nave_projetil_quantidade += tick
@@ -237,8 +262,10 @@ class Jogo:
                     return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.transicao_tela(self.superficie, 0.001, False)
                         return
                     elif event.key == pygame.K_F4 and pygame.key.get_mods() & pygame.KMOD_ALT:
+                        self.transicao_tela(self.superficie, 0.001, False)
                         return
 
             self.jogador.mover(pygame.key.get_pressed())
