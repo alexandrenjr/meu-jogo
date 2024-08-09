@@ -12,6 +12,16 @@ Tendo isso em vista, gostaria de fazer algo diferente e um simples jogo era perf
 
 Sem mistérios e grandes expectativas: é um jogos simples de nave. Minha inspiração é um jogo que joguei no [Super Nintendo](https://pt.wikipedia.org/wiki/Super_Nintendo_Entertainment_System) chamado [Strike Gunner S.T.G.](https://pt.wikipedia.org/wiki/Strike_Gunner_S.T.G.). Obviamente que meu simples jogo não chega aos pés desse, mas pretendo adicionar novas funcionalidades para o projeto, principalmente novas armas, da mesma forma que o S.T.G. possuía.
 
+### Desenvolvimento
+
+O jogo foi feito usando o módulo [PyGame](https://www.pygame.org/), o que tornou o processo simples. Assim como já existia várias outras soluções em [Python](python.org), uma solução para jogos não ficaria de fora.
+
+Inicialmente, estudei o módulo para saber como funciona. Como já tinha bastante noção de [programação orientada a objetos](https://pt.wikipedia.org/wiki/Programa%C3%A7%C3%A3o_orientada_a_objetos) e durante minha gradução tinha feito um trabalho usando [JavaFX](https://openjfx.io/), saber como o [PyGame](https://www.pygame.org/) funciona foi relativamente simples. Basicamente segue a mesma ideia de cenas (ou superfícies, nesse caso) e objetos do [JavaFX](https://openjfx.io/).
+
+Para não ir cru ao desenvolvimento, resolvi seguir um vídeo do [YouTube](https://www.youtube.com/). Acabei encontrado [esse](https://youtu.be/waY3LfJhQLY?si=qCE5bLjOWkpGs2zy), do [Tech with Tim](https://www.youtube.com/@TechWithTim), que me ajudou a entender esse processo.
+
+Posteriormente, resolvi estender sozinho a aplicação, desenvolvendo lógicas mais completas e também a brincar com sprites.
+
 ## Tutorial de instalação
 
 ## Requisitos
