@@ -27,7 +27,7 @@ class Jogo:
         """Configura as propriedades da tela do jogo."""
         dimensoes_sistema_atual = pygame.display.Info()
         self.sistema_largura, self.sistema_altura = dimensoes_sistema_atual.current_w, dimensoes_sistema_atual.current_h
-        self.janela = pygame.display.set_mode((self.sistema_largura, self.sistema_altura), pygame.FULLSCREEN | pygame.RESIZABLE)
+        self.superficie_principal = pygame.display.set_mode((self.sistema_largura, self.sistema_altura), pygame.FULLSCREEN | pygame.RESIZABLE)
         self.largura, self.altura = JogoConfig.JANELA_LARGURA, JogoConfig.JANELA_ALTURA
         self.superficie = pygame.Surface((self.largura, self.altura))
         pygame.display.set_caption("Meu jogo")
@@ -38,23 +38,6 @@ class Jogo:
         camadas_imagens_caminhos = [buscar_caminho_arquivo("layer1.png", "assets/images")]
         camadas_imagens_velocidades = [1, 3]
         self.paralaxe = Paralaxe(self.superficie, camadas_imagens_caminhos, camadas_imagens_velocidades)
-
-
-    def transicao_tela(self, superficie: pygame.Surface, duracao: float = 0.001, aparecer_gradualmente: str = True) -> None:
-        passo = 5
-        atraso = int(duracao * 1000 / (255 // passo))
-
-        if aparecer_gradualmente:
-            intervalo_alfa = range(0, 256, passo)
-        else:
-            intervalo_alfa = range(255, -1, -passo)
-
-        for alfa in intervalo_alfa:
-            superficie.set_alpha(alfa)
-            self.janela.fill((0, 0, 0))
-            self.janela.blit(pygame.transform.scale(superficie, self.janela.get_size()), (0, 0))
-            pygame.display.update()
-            pygame.time.delay(atraso)
 
 
     def configurar_sons(self) -> None:
@@ -126,7 +109,7 @@ class Jogo:
     def adicionar_nave_projeteis(self) -> None:
         """Adiciona projéteis disparados pela nave."""
         projetil_x = self.jogador.rect.x + (JogadorConfig.LARGURA / 2) - (JogadorConfig.PROJETIL_LARGURA / 2)
-        projetil = Projetil(projetil_x, self.jogador.rect.y + JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_LARGURA, JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_VELOCIDADE, (253, 0, 24))
+        projetil = Projetil(projetil_x, self.jogador.rect.y + JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_LARGURA, JogadorConfig.PROJETIL_ALTURA, JogadorConfig.PROJETIL_VELOCIDADE, JogadorConfig.PROJETIL_COR)
         self.nave_projeteis.append(projetil)
         self.nave_projetil_quantidade = 0
         self.som_tiro.play()
@@ -172,7 +155,7 @@ class Jogo:
             else:
                 for al in self.als:
                     if al.rect.colliderect(nave_projetil):
-                        al.desenhar(self.janela, True)
+                        al.desenhar(self.superficie_principal, True)
                         al.atingido = True
                         inimigos_para_remover.append(al)
                         self.pontos += 1
@@ -195,10 +178,15 @@ class Jogo:
                 self.nave_projeteis.remove(nave_projetil)
 
 
+    def desenhar_menu(self) -> None:
+        self.superficie_principal.fill((0, 0, 0))
+        pygame.display.update()
+
+
     def desenhar(self, atualizar_tela: bool = True) -> None:
         """Desenha o jogo."""
+        self.superficie_principal.fill((0, 0, 0))
         self.superficie.fill((0, 0, 0))
-        self.janela.fill((0, 0, 0))
         self.paralaxe.rolar()
         self.jogador.desenhar(self.superficie)
         for al in self.als:
@@ -208,14 +196,14 @@ class Jogo:
         for nave_projetil in self.nave_projeteis:
             nave_projetil.desenhar(self.superficie)
         
-        self.janela.blit(pygame.transform.scale(self.superficie, self.janela.get_size()), (0, 0))
+        self.superficie_principal.blit(pygame.transform.scale(self.superficie, self.superficie_principal.get_size()), (0, 0))
         
         self.texto_tempo = self.fontes["tempo"].render(f"Tempo: {round(self.tempo_decorrido)}s", 1, "white")
         self.texto_pontos = self.fontes["pontos"].render(f"Pontos: {self.pontos}", 1, "white")
         texto_tempo_coordenadas = (10, 10)
-        texto_pontos_coordenadas = (centralizar_x(self.texto_pontos.get_width(), self.janela.get_width()), 10)
-        self.janela.blit(self.texto_tempo, texto_tempo_coordenadas)
-        self.janela.blit(self.texto_pontos, texto_pontos_coordenadas)
+        texto_pontos_coordenadas = (centralizar_x(self.texto_pontos.get_width(), self.superficie_principal.get_width()), 10)
+        self.superficie_principal.blit(self.texto_tempo, texto_tempo_coordenadas)
+        self.superficie_principal.blit(self.texto_pontos, texto_pontos_coordenadas)
         
         if atualizar_tela:
             pygame.display.flip()
@@ -229,17 +217,18 @@ class Jogo:
         x_medio_janela = (self.texto_derrota.get_width(), self.texto_derrota.get_height())
         y_medio_janela = (self.sistema_largura, self.sistema_altura)
         texto_derrota_coordenadas = centralizar(x_medio_janela, y_medio_janela)
-        self.janela.blit(self.texto_derrota, texto_derrota_coordenadas)
+        self.superficie_principal.blit(self.texto_derrota, texto_derrota_coordenadas)
         pygame.display.update()
         pygame.time.delay(1500)
-        self.transicao_tela(self.superficie, 0.001, False)
+        transitar_tela(self.superficie_principal, self.superficie, 0.001, False)
 
 
     def executar(self) -> None:
         """Execução do jogo."""
+
         self.musica_fundo.play(-1)
         self.desenhar(False)
-        self.transicao_tela(self.superficie)
+        transitar_tela(self.superficie_principal, self.superficie)
 
         while True:
             tick = self.relogio.tick(60)
@@ -259,13 +248,16 @@ class Jogo:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    print("Finalizando aplicação...")
                     return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.transicao_tela(self.superficie, 0.001, False)
+                        transitar_tela(self.superficie_principal, self.superficie, 0.001, False)
+                        print("Finalizando aplicação...")
                         return
                     elif event.key == pygame.K_F4 and pygame.key.get_mods() & pygame.KMOD_ALT:
-                        self.transicao_tela(self.superficie, 0.001, False)
+                        transitar_tela(self.superficie_principal, self.superficie, 0.001, False)
+                        print("Finalizando aplicação...")
                         return
 
             self.jogador.mover(pygame.key.get_pressed())
@@ -275,6 +267,7 @@ class Jogo:
 
             if self.colisao:
                 self.mostrar_mensagem_derrota()
+                print("Finalizando aplicação...")
                 break
 
             self.desenhar()

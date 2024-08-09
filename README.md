@@ -16,13 +16,13 @@ Sem mistérios e grandes expectativas: é um jogos simples de nave. Minha inspir
 
 O jogo foi feito usando o módulo [PyGame](https://www.pygame.org/), o que tornou o processo simples. Assim como já existia várias outras soluções em [Python](python.org), uma solução para jogos não ficaria de fora.
 
-Inicialmente, estudei o módulo para saber como funciona. Como já tinha bastante noção de [programação orientada a objetos](https://pt.wikipedia.org/wiki/Programa%C3%A7%C3%A3o_orientada_a_objetos) e durante minha gradução tinha feito um trabalho usando [JavaFX](https://openjfx.io/), saber como o [PyGame](https://www.pygame.org/) funciona foi relativamente simples. Basicamente segue a mesma ideia de cenas (ou superfícies, nesse caso) e objetos do [JavaFX](https://openjfx.io/).
+Inicialmente, estudei o módulo para saber como funciona. Como já tinha bastante noção de [programação orientada a objetos](https://pt.wikipedia.org/wiki/Programa%C3%A7%C3%A3o_orientada_a_objetos) (e ainda durante minha gradução tinha feito um trabalho usando [JavaFX](https://openjfx.io/)), saber como o [PyGame](https://www.pygame.org/) funciona foi relativamente simples. Basicamente segue a mesma ideia de cenas (ou superfícies, nesse caso) e objetos do [JavaFX](https://openjfx.io/).
 
 Para não ir cru ao desenvolvimento, resolvi seguir um vídeo do [YouTube](https://www.youtube.com/). Acabei encontrado [esse](https://youtu.be/waY3LfJhQLY?si=qCE5bLjOWkpGs2zy), do [Tech with Tim](https://www.youtube.com/@TechWithTim), que me ajudou a entender esse processo.
 
 Posteriormente, resolvi estender sozinho a aplicação, desenvolvendo lógicas mais complexas e também a brincar com sprites. Para isso, gostaria de trocar os retângulos básicos para formas mais complexas. Então, inicialmente, foquei na nave. Um colega de trabalho desenhou uma nave simples usando o [Figma](https://www.figma.com/pt-br/?context=confirmLocalePref). Acabei adotando a imagem por usar polígonos. Assim, eu poderia poderia desenhá-los "à mão". A imagem consistia em triângulos e trapézios.
 
-[INSERIR PRIMEIRA IMAGEM AQUI]
+![image](git/1.1.png)
 
 Minha ideia para desenhar a nave com o [pygame.draw.polygon](https://www.pygame.org/docs/ref/draw.html#pygame.draw.polygon) era pegar as posiçoes relativas ao invés das absolutas. Fazendo isso, eu poderia aumentar ou diminuir a imagem sem perder a forma da nave.
 

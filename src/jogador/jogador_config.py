@@ -12,6 +12,7 @@ class JogadorConfig:
     Y = JogoConfig.JANELA_ALTURA - ALTURA - 10
     COR = (161, 254, 117)
     VELOCIDADE = 7
+    PROJETIL_COR = (253, 0, 24)
     PROJETIL_VELOCIDADE = 10
     PONTOS_MODULO_PRINCIPAL = [
         (0.3388 * LARGURA, ALTURA),

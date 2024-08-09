@@ -40,19 +40,19 @@ class Jogador(Objeto):
         if self.rect.y + dy >= 0 and self.rect.y + dy + self.rect.height <= self.janela_altura:
             self.rect.y += dy
 
-    def desenhar(self, janela: pygame.Surface) -> None:
+    def desenhar(self, superficie_principal: pygame.Surface) -> None:
         pontos_modulo_principal_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_modulo_principal]
         pontos_asas_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_asas]
         pontos_foquete_esquerdo_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_foquete_esquerdo]
         pontos_foquete_direito_ajustados = [(self.rect.x + px, self.rect.y + py) for px, py in self.pontos_foquete_direito]
 
-        # pygame.draw.rect(janela, self.cor, self.rect, 2)
-        pygame.draw.polygon(janela, self.cor, pontos_modulo_principal_ajustados)
-        pygame.draw.polygon(janela, self.cor, pontos_asas_ajustados)
-        pygame.draw.polygon(janela, self.cor, pontos_foquete_esquerdo_ajustados)
-        pygame.draw.polygon(janela, self.cor, pontos_foquete_direito_ajustados)
+        # pygame.draw.rect(superficie_principal, self.cor, self.rect, 2)
+        pygame.draw.polygon(superficie_principal, self.cor, pontos_modulo_principal_ajustados)
+        pygame.draw.polygon(superficie_principal, self.cor, pontos_asas_ajustados)
+        pygame.draw.polygon(superficie_principal, self.cor, pontos_foquete_esquerdo_ajustados)
+        pygame.draw.polygon(superficie_principal, self.cor, pontos_foquete_direito_ajustados)
         # cores = interpolar_cores(len(self.hitboxes), (255, 0, 255), (255, 0, 0))
         for i, hitbox in enumerate(self.hitboxes):
             hitbox.x = self.rect.x + self.pontos_hitboxes[i].x
             hitbox.y = self.rect.y + self.pontos_hitboxes[i].y
-            # pygame.draw.rect(janela, cores[i], hitbox, 2)
+            # pygame.draw.rect(superficie_principal, cores[i], hitbox, 2)
