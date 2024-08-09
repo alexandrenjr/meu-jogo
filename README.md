@@ -20,7 +20,11 @@ Inicialmente, estudei o módulo para saber como funciona. Como já tinha bastant
 
 Para não ir cru ao desenvolvimento, resolvi seguir um vídeo do [YouTube](https://www.youtube.com/). Acabei encontrado [esse](https://youtu.be/waY3LfJhQLY?si=qCE5bLjOWkpGs2zy), do [Tech with Tim](https://www.youtube.com/@TechWithTim), que me ajudou a entender esse processo.
 
-Posteriormente, resolvi estender sozinho a aplicação, desenvolvendo lógicas mais completas e também a brincar com sprites.
+Posteriormente, resolvi estender sozinho a aplicação, desenvolvendo lógicas mais complexas e também a brincar com sprites. Para isso, gostaria de trocar os retângulos básicos para formas mais complexas. Então, inicialmente, foquei na nave. Um colega de trabalho desenhou uma nave simples usando o [Figma](https://www.figma.com/pt-br/?context=confirmLocalePref). Acabei adotando a imagem por usar polígonos. Assim, eu poderia poderia desenhá-los "à mão". A imagem consistia em triângulos e trapézios.
+
+[INSERIR PRIMEIRA IMAGEM AQUI]
+
+Minha ideia para desenhar a nave com o [pygame.draw.polygon](https://www.pygame.org/docs/ref/draw.html#pygame.draw.polygon) era pegar as posiçoes relativas ao invés das absolutas. Fazendo isso, eu poderia aumentar ou diminuir a imagem sem perder a forma da nave.
 
 ## Tutorial de instalação
 
